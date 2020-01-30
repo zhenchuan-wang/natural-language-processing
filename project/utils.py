@@ -41,36 +41,31 @@ def load_embeddings(embeddings_path):
       embeddings - dict mapping words to vectors;
       embeddings_dim - dimension of the vectors.
     """
+    embeddings = {}
 
-    # Hint: you have already implemented a similar routine in the 3rd assignment.
-    # Note that here you also need to know the dimension of the loaded embeddings.
-    # When you load the embeddings, use numpy.float32 type as dtype
-
-    ########################
-    #### YOUR CODE HERE ####
-    ########################
-
-    # remove this when you're done
-    raise NotImplementedError(
-        "Open utils.py and fill with your code. In case of Google Colab, download"
-        "(https://github.com/hse-aml/natural-language-processing/blob/master/project/utils.py), "
-        "edit locally and upload using '> arrow on the left edge' -> Files -> UPLOAD")
-
+    for line in open(embeddings_path):
+        word, vec = line.split('\t',1)
+        embeddings[word]= np.fromstring(vec, dtype=np.float32, sep="\t")
+    
+    embeddings_dimension = embeddings[list(embeddings)[0]].shape[0]
+    
+    return embeddings, embeddings_dimension
 
 def question_to_vec(question, embeddings, dim):
     """Transforms a string to an embedding by averaging word embeddings."""
+    question_list = question.split()
+    if len(question_list) == 0:
+        return  [0] * dim
+    else:
+        result = []
+        for word in question_list:
+            if word in embeddings:
+                result.append(embeddings[word])
+        if len(result) == 0:
+            return [0] * dim
+        else:
+            return sum(result)/len(result)
 
-    # Hint: you have already implemented exactly this function in the 3rd assignment.
-
-    ########################
-    #### YOUR CODE HERE ####
-    ########################
-
-    # remove this when you're done
-    raise NotImplementedError(
-        "Open utils.py and fill with your code. In case of Google Colab, download"
-        "(https://github.com/hse-aml/natural-language-processing/blob/master/project/utils.py), "
-        "edit locally and upload using '> arrow on the left edge' -> Files -> UPLOAD")
 
 
 def unpickle_file(filename):
